@@ -299,28 +299,39 @@ server <- function(input, output, session) {
     chosen <- input$strategies
     series_list <- list()
     
-    run_strategy <- function(label, pick_fun, deterministic) {
-      avg <- average_runs(
-        g, pick_fun,
-        runs = input$runs,
-        pct = input$pct_seeds,
-        ic_max_iter = input$iters,
-        deterministic = deterministic,
-        precomp = pre
-      )
-      c(avg[1], diff(avg))
-    }
+    total_strats <- length(chosen)
+    i <- 0
     
-    if ("Top outdegree" %in% chosen)
-      series_list[["Top outdegree"]]   <- run_strategy("Top outdegree",      ranks$pick_outdeg,      TRUE)
-    if ("Top betweenness" %in% chosen)
-      series_list[["Top betweenness"]] <- run_strategy("Top betweenness",    ranks$pick_betweenness, TRUE)
-    if ("Top closeness" %in% chosen)
-      series_list[["Top closeness"]]   <- run_strategy("Top closeness",      ranks$pick_closeness,   TRUE)
-    if ("Losowe" %in% chosen)
-      series_list[["Losowe"]]          <- run_strategy("Losowe",             ranks$pick_random,      FALSE)
-    if ("PageRank" %in% chosen)
-      series_list[["PageRank"]]        <- run_strategy("PageRank",           ranks$pick_pagerank,    TRUE)
+    withProgress(message = "Trwa symulacja", value = 0, {
+      
+      run_strategy <- function(label, pick_fun, deterministic) {
+        
+        i <<- i + 1
+        setProgress(i / total_strats, detail = paste("Strategia:", label))
+        
+        avg <- average_runs(
+          g, pick_fun,
+          runs = input$runs,
+          pct = input$pct_seeds,
+          ic_max_iter = input$iters,
+          deterministic = deterministic,
+          precomp = pre
+        )
+        c(avg[1], diff(avg))
+      }
+      
+      if ("Top outdegree" %in% chosen)
+        series_list[["Top outdegree"]]   <- run_strategy("Top outdegree",      ranks$pick_outdeg,      TRUE)
+      if ("Top betweenness" %in% chosen)
+        series_list[["Top betweenness"]] <- run_strategy("Top betweenness",    ranks$pick_betweenness, TRUE)
+      if ("Top closeness" %in% chosen)
+        series_list[["Top closeness"]]   <- run_strategy("Top closeness",      ranks$pick_closeness,   TRUE)
+      if ("Losowe" %in% chosen)
+        series_list[["Losowe"]]          <- run_strategy("Losowe",             ranks$pick_random,      FALSE)
+      if ("PageRank" %in% chosen)
+        series_list[["PageRank"]]        <- run_strategy("PageRank",           ranks$pick_pagerank,    TRUE)
+      
+    })
     
     # --- Wykres
     maxlen <- max(sapply(series_list, length))
