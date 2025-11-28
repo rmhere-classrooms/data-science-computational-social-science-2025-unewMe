@@ -114,6 +114,14 @@ compute_rankings <- function(g) {
   sc_out <- degree(g, mode="out")
   sc_bet <- betweenness(g, directed = TRUE)
   sc_clo <- closeness(g, mode="out")
+  
+  # Nowa miara własna (5. strategia): PageRank
+  # -----------------------------------------
+  # Jako własną miarę centralności wykorzystuję PageRank.
+  # Jest to metoda inspirowana algorytmem rankingowania stron Google.
+  # Węzły otrzymują większą wartość centralności, jeżeli:
+  # - otrzymują dużo połączeń (dużo sąsiadów wskazuje na węzeł),
+  # - a szczególnie, jeśli są to połączenia od węzłów, które same mają wysoką centralność.
   sc_pr  <- page_rank(g, directed = TRUE, weights = E(g)$weight)$vector
   
   ord_out <- order(sc_out, decreasing = TRUE)

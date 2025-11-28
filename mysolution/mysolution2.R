@@ -19,5 +19,8 @@ diameter(g)
 # 6. 
 # Erdős-Rényi ma losowe krawędzie między parami węzłów (stopnie ~ rozkład Poissona, brak wyraźnych hubów), 
 # a Barabási–Albert dodaje nowe węzły „preferencyjnie” do już dobrze podłączonych (prawo potęgowe stopni, powstają huby i sieć scale-free).
-
+# Model BA generuje złożoną strukturę z kilkoma dominującymi węzłami,
+# podczas gdy ER zachowuje bardziej jednorodną i losową strukturę sieci.
+# Dodatkowo sieci BA są odporne na losowe uszkodzenia, ale podatne na ukierunkowane ataki na huby, 
+# czego nie obserwuje się w takim stopniu w grafach ER.
 
